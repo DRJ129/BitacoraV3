@@ -31,6 +31,11 @@ class IncidenciaController extends Controller
             'content' => 'required|string|max:5000',
         ]);
 
+        // Only allow the owner or an admin to update
+        if (!Auth::check() || (Auth::id() !== $incidencia->user_id && Auth::user()->role !== 'admin')) {
+            return redirect()->route('admin.gestion')->with('error', 'No autorizado para editar esta incidencia');
+        }
+
         $incidencia->content = $data['content'];
         $incidencia->save();
 
@@ -39,6 +44,11 @@ class IncidenciaController extends Controller
 
     public function destroy(Incidencia $incidencia)
     {
+        // Only allow the owner or an admin to delete
+        if (!Auth::check() || (Auth::id() !== $incidencia->user_id && Auth::user()->role !== 'admin')) {
+            return redirect()->route('admin.gestion')->with('error', 'No autorizado para eliminar esta incidencia');
+        }
+
         $incidencia->delete();
         return redirect()->route('admin.gestion')->with('success','Incidencia eliminada');
     }

@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Rutina;
 use App\Models\Incidencia;
 use App\Models\RutinaCompletion;
+use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 
 class ReporteController extends Controller
@@ -43,14 +44,26 @@ class ReporteController extends Controller
                 break;
         }
 
-        // Routines considered 'done' are those with a completion record within the range
-        $doneRoutineIds = RutinaCompletion::whereBetween('date', [$from->toDateString(), $to->toDateString()])->pluck('rutina_id')->unique()->toArray();
+        // Routines considered 'done' are those with a completion record within the range for the current user
+        $userId = Auth::id();
+        if (!$userId) {
+            $doneRoutineIds = [];
+        } else {
+            $doneRoutineIds = RutinaCompletion::whereBetween('date', [$from->toDateString(), $to->toDateString()])
+                ->where('user_id', $userId)
+                ->pluck('rutina_id')->unique()->toArray();
+        }
         $routinesDone = Rutina::whereIn('id', $doneRoutineIds)->orderBy('id','desc')->get();
 
-        $incidencias = Incidencia::whereBetween('created_at', [$from, $to])
-            ->with('user')
-            ->orderBy('created_at', 'asc')
-            ->get();
+        if ($userId) {
+            $incidencias = Incidencia::whereBetween('created_at', [$from, $to])
+                ->where('user_id', $userId)
+                ->with('user')
+                ->orderBy('created_at', 'asc')
+                ->get();
+        } else {
+            $incidencias = collect();
+        }
 
         // If week range, group results per day so the view can render a list per weekday
         $byDay = null;
@@ -94,13 +107,24 @@ class ReporteController extends Controller
                 $dayStart = $cursor->copy()->startOfDay();
                 $dayEnd = $cursor->copy()->endOfDay();
 
-                $rDoneIds = RutinaCompletion::whereDate('date', $dayStart->toDateString())->pluck('rutina_id')->unique()->toArray();
+                if ($userId) {
+                    $rDoneIds = RutinaCompletion::whereDate('date', $dayStart->toDateString())
+                        ->where('user_id', $userId)
+                        ->pluck('rutina_id')->unique()->toArray();
+                } else {
+                    $rDoneIds = [];
+                }
                 $rDone = Rutina::whereIn('id', $rDoneIds)->orderBy('id','desc')->get();
 
-                $incs = Incidencia::whereBetween('created_at', [$dayStart, $dayEnd])
-                    ->with('user')
-                    ->orderBy('created_at', 'asc')
-                    ->get();
+                if ($userId) {
+                    $incs = Incidencia::whereBetween('created_at', [$dayStart, $dayEnd])
+                        ->where('user_id', $userId)
+                        ->with('user')
+                        ->orderBy('created_at', 'asc')
+                        ->get();
+                } else {
+                    $incs = collect();
+                }
 
                 // Spanish weekday names starting Monday
                 $weekdayName = ucfirst(
@@ -137,13 +161,22 @@ class ReporteController extends Controller
         $dayStart = $day->copy()->startOfDay();
         $dayEnd = $day->copy()->endOfDay();
 
-    $routines = Rutina::whereIn('id', RutinaCompletion::whereDate('date', $dayStart->toDateString())->pluck('rutina_id')->unique()->toArray())->orderBy('id','desc')->get();
+    $routines = [];
+    $userId = Auth::id();
+    if ($userId) {
+        $routines = Rutina::whereIn('id', RutinaCompletion::whereDate('date', $dayStart->toDateString())->where('user_id', $userId)->pluck('rutina_id')->unique()->toArray())->orderBy('id','desc')->get();
+    }
 
     // Incidencias del día en orden de inserción (asc)
-    $incidencias = Incidencia::whereBetween('created_at', [$dayStart, $dayEnd])
-        ->with('user')
-        ->orderBy('created_at', 'asc')
-        ->get();
+    if ($userId) {
+        $incidencias = Incidencia::whereBetween('created_at', [$dayStart, $dayEnd])
+            ->where('user_id', $userId)
+            ->with('user')
+            ->orderBy('created_at', 'asc')
+            ->get();
+    } else {
+        $incidencias = collect();
+    }
 
         $viewData = ['title' => 'Reporte ' . $day->format('Y-m-d'), 'byDay' => [[
             'date' => $day,
@@ -193,13 +226,22 @@ class ReporteController extends Controller
             $dayStart = $cursor->copy()->startOfDay();
             $dayEnd = $cursor->copy()->endOfDay();
 
-            $rDoneIds = RutinaCompletion::whereDate('date', $dayStart->toDateString())->pluck('rutina_id')->unique()->toArray();
+            if ($userId) {
+                $rDoneIds = RutinaCompletion::whereDate('date', $dayStart->toDateString())->where('user_id', $userId)->pluck('rutina_id')->unique()->toArray();
+            } else {
+                $rDoneIds = [];
+            }
             $rDone = Rutina::whereIn('id', $rDoneIds)->orderBy('id','desc')->get();
 
-            $incs = Incidencia::whereBetween('created_at', [$dayStart, $dayEnd])
-                ->with('user')
-                ->orderBy('created_at', 'asc')
-                ->get();
+            if ($userId) {
+                $incs = Incidencia::whereBetween('created_at', [$dayStart, $dayEnd])
+                    ->where('user_id', $userId)
+                    ->with('user')
+                    ->orderBy('created_at', 'asc')
+                    ->get();
+            } else {
+                $incs = collect();
+            }
 
             $weekdayName = ucfirst(\Carbon\Carbon::parse($dayStart)->locale('es')->isoFormat('dddd'));
 

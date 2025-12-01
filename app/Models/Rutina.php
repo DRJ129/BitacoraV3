@@ -11,6 +11,5 @@ class Rutina extends Model
 
     protected $fillable = [
         'content',
-        'completed',
     ];
 }

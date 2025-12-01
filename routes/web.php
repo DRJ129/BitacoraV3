@@ -49,10 +49,21 @@ Route::delete('/admin/rutinas/{rutina}', [RutinaController::class, 'destroy'])->
 Route::get('/admin/gestion', function(){
     $routines = App\Models\Rutina::orderBy('id','desc')->get();
     // Mostrar solo incidencias creadas en la fecha actual (orden ascendente para numeración por inserción)
-    $incidencias = App\Models\Incidencia::whereDate('created_at', Carbon::today())->orderBy('created_at','asc')->get();
+    $incidencias = collect();
+    if (Auth::check()) {
+        $incidencias = App\Models\Incidencia::whereDate('created_at', Carbon::today())
+            ->where('user_id', Auth::id())
+            ->orderBy('created_at','asc')
+            ->get();
+    }
 
     // Obtener completions de hoy para mostrar las rutinas marcadas del día
-    $completedIds = App\Models\RutinaCompletion::whereDate('date', Carbon::today())->pluck('rutina_id')->toArray();
+    $completedIds = [];
+    if (Auth::check()) {
+        $completedIds = App\Models\RutinaCompletion::whereDate('date', Carbon::today())
+            ->where('user_id', Auth::id())
+            ->pluck('rutina_id')->toArray();
+    }
 
     // Mostrar el nombre del día en español usando Carbon
     $dayName = Carbon::now()->locale('es')->isoFormat('dddd');

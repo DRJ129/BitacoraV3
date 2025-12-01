@@ -71,10 +71,6 @@ class RutinaController extends Controller
         ]);
 
         $rutina->content = $data['content'];
-        // allow optional completed input
-        if ($request->has('completed')) {
-            $rutina->completed = $request->boolean('completed');
-        }
         $rutina->save();
 
         return redirect()->route('admin.rutinas')->with('success','Rutina actualizada');

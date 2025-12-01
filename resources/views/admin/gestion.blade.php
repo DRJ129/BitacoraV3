@@ -149,27 +149,31 @@
                       </div>
 
                       <div style="margin-left:12px;display:flex;flex-direction:column;gap:6px">
-                        <button type="button" class="btn-edit" data-id="{{ $inc->id }}" style="background:transparent;color:var(--red-1);border:1px solid rgba(255,255,255,0.03);padding:6px 10px;border-radius:6px;cursor:pointer">Editar</button>
+                        @if(Auth::check() && (Auth::id() === $inc->user_id || Auth::user()->role === 'admin'))
+                          <button type="button" class="btn-edit" data-id="{{ $inc->id }}" style="background:transparent;color:var(--red-1);border:1px solid rgba(255,255,255,0.03);padding:6px 10px;border-radius:6px;cursor:pointer">Editar</button>
 
-                        <form method="POST" action="{{ route('admin.incidencias.destroy', $inc) }}" onsubmit="return confirm('¿Eliminar incidencia?');" style="margin:0">
-                          @csrf
-                          @method('DELETE')
-                          <button type="submit" style="background:#3b3f44;color:#fff;border:0;padding:6px 10px;border-radius:6px;cursor:pointer">Eliminar</button>
-                        </form>
+                          <form method="POST" action="{{ route('admin.incidencias.destroy', $inc) }}" onsubmit="return confirm('¿Eliminar incidencia?');" style="margin:0">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" style="background:#3b3f44;color:#fff;border:0;padding:6px 10px;border-radius:6px;cursor:pointer">Eliminar</button>
+                          </form>
+                        @endif
                       </div>
                     </div>
 
-                    <div id="inc-edit-{{ $inc->id }}" style="display:none;margin-top:8px">
-                      <form id="inc-edit-form-{{ $inc->id }}" method="POST" action="{{ route('admin.incidencias.update', $inc) }}">
-                        @csrf
-                        @method('PATCH')
-                        <textarea name="content" rows="3" style="width:100%;border-radius:8px;padding:8px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:#e6eef2">{{ old('content', $inc->content) }}</textarea>
-                        <div style="margin-top:8px;text-align:right;display:flex;gap:8px;justify-content:flex-end">
-                          <button type="button" class="btn-cancel" data-id="{{ $inc->id }}" style="background:#3b3f44;color:#fff;padding:6px 10px;border-radius:6px;border:0;cursor:pointer">Cancelar</button>
-                          <button type="button" class="btn-confirm" data-id="{{ $inc->id }}" style="background:var(--red-1);color:#fff;padding:6px 10px;border-radius:6px;border:0;cursor:pointer">Confirmar</button>
-                        </div>
-                      </form>
-                    </div>
+                    @if(Auth::check() && (Auth::id() === $inc->user_id || Auth::user()->role === 'admin'))
+                      <div id="inc-edit-{{ $inc->id }}" style="display:none;margin-top:8px">
+                        <form id="inc-edit-form-{{ $inc->id }}" method="POST" action="{{ route('admin.incidencias.update', $inc) }}">
+                          @csrf
+                          @method('PATCH')
+                          <textarea name="content" rows="3" style="width:100%;border-radius:8px;padding:8px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:#e6eef2">{{ old('content', $inc->content) }}</textarea>
+                          <div style="margin-top:8px;text-align:right;display:flex;gap:8px;justify-content:flex-end">
+                            <button type="button" class="btn-cancel" data-id="{{ $inc->id }}" style="background:#3b3f44;color:#fff;padding:6px 10px;border-radius:6px;border:0;cursor:pointer">Cancelar</button>
+                            <button type="button" class="btn-confirm" data-id="{{ $inc->id }}" style="background:var(--red-1);color:#fff;padding:6px 10px;border-radius:6px;border:0;cursor:pointer">Confirmar</button>
+                          </div>
+                        </form>
+                      </div>
+                    @endif
                   @endforeach
                 @else
                   <div class="check-item" style="justify-content:center;color:#9fb0b8">No hay incidencias registradas.</div>
