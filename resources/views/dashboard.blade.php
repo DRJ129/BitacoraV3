@@ -66,22 +66,24 @@
               <div style="position:relative">
                 <button id="adminBtn" onclick="toggleAdmin()" style="width:100%;text-align:left;padding:10px 12px;border-radius:8px;border:0;background:transparent;color:#cbd5dd;font-weight:700;cursor:pointer">Administrador ▾</button>
                 <div id="adminSub" class="submenu" style="display:none;margin-top:6px;">
-                  <a href="{{ route('admin.usuarios') }}" style="display:block;padding:8px 12px;border-radius:6px;color:#cbd5dd;text-decoration:none">Usuarios</a>
+                  @if(Auth::check() && Auth::user()->role === 'admin')
+                    <a href="{{ route('admin.usuarios') }}" style="display:block;padding:8px 12px;border-radius:6px;color:#cbd5dd;text-decoration:none">Usuarios</a>
+                  @endif
                   <a href="{{ route('admin.rutinas') }}" style="display:block;padding:8px 12px;border-radius:6px;color:#cbd5dd;text-decoration:none">Rutinas</a>
                 </div>
               </div>
 
-              <a href="#">Gestión</a>
+              <a href="{{ route('admin.gestion') }}">Gestión</a>
               <a href="#">Reportes</a>
             </nav>
 
             <div class="user-bottom" style="position:relative">
               <button id="userBtn" onclick="toggleUser()" style="background:transparent;border:0;color:#cbd5dd;font-weight:700;cursor:pointer">@auth {{ Auth::user()->name }} {{ Auth::user()->lastname ?? '' }} @else Usuario @endauth ▴</button>
-              <div id="userSub" class="user-submenu">
-                <a href="{{ route('user.info') }}">Información</a>
+              <div id="userSub" class="submenu" style="display:none;margin-top:6px;">
+                <a href="{{ route('user.info') }}" style="display:block;padding:8px 12px;border-radius:6px;color:#cbd5dd;text-decoration:none">Información</a>
                 <form method="POST" action="{{ route('logout') }}" style="margin:6px 0 0">
                   @csrf
-                  <button type="submit">Salir</button>
+                  <button type="submit" style="display:block;padding:8px 12px;border-radius:6px;color:#cbd5dd;background:transparent;border:0;text-align:left;width:100%">Salir</button>
                 </form>
               </div>
             </div>

@@ -3,73 +3,118 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Editar usuario - Bitácora</title>
+    <title>Bitácora - Editar usuario</title>
     <style>
-      :root{--red-1:#E22227;--dark-1:#222B31;--card-bg:rgba(34,43,49,0.95)}
-      html,body{height:100%;margin:0;font-family:Segoe UI,Roboto,Helvetica,Arial,sans-serif;background:linear-gradient(180deg,var(--dark-1) 0%, #16181a 60%);color:#e6eef2}
+      :root{
+        --red-1:#E22227;
+        --red-2:#C7080C;
+        --dark-1:#222B31;
+        --card-bg:rgba(34,43,49,0.95);
+        --sidebar-bg:rgba(20,26,29,0.95);
+        --glass-border:rgba(255,255,255,0.03);
+      }
+      html,body{height:100%;margin:0;font-family:Segoe UI, Roboto, Helvetica, Arial, sans-serif;background:linear-gradient(180deg,var(--dark-1) 0%, #16181a 60%);color:#e6eef2}
       .wrap{min-height:100%;display:flex;align-items:center;justify-content:center;padding:28px}
-      .card{width:100%;max-width:720px;background:var(--card-bg);padding:22px;border-radius:12px;border:1px solid rgba(255,255,255,0.03)}
+      .outer{width:100%;max-width:1300px;border-radius:14px;padding:18px;background:transparent}
+      .inner{background:var(--card-bg);border-radius:12px;padding:18px;display:flex;min-height:620px;border:1px solid var(--glass-border);box-shadow:0 30px 70px rgba(0,0,0,0.6)}
+      .sidebar{width:260px;background:var(--sidebar-bg);border-radius:8px;padding:22px;display:flex;flex-direction:column;gap:18px}
+      .brand{font-weight:800;color:var(--red-1);font-size:22px}
+      .dept{font-size:13px;color:#cbd5dd}
+      .menu{display:flex;flex-direction:column;gap:8px;margin-top:10px}
+      .menu a{color:#cbd5dd;text-decoration:none;padding:10px 12px;border-radius:8px;font-weight:600}
+      .menu a:hover{background:rgba(255,255,255,0.02)}
+      .user-bottom{margin-top:auto;font-size:14px;color:#cbd5dd}
+      .main{flex:1;padding-left:28px;display:flex;flex-direction:column}
+      .topbar{display:flex;justify-content:center;align-items:center;padding:6px 0}
+      .title-pill{background:rgba(255,255,255,0.03);padding:10px 40px;border-radius:8px;border:1px solid rgba(255,255,255,0.02);font-weight:700}
+      .content{margin-top:18px;flex:1;border-radius:8px;padding:18px;background:linear-gradient(180deg,rgba(255,255,255,0.01), rgba(0,0,0,0.03));position:relative}
+
+      .card{width:100%;max-width:760px;background:rgba(0,0,0,0.12);padding:18px;border-radius:10px;border:1px solid rgba(255,255,255,0.02);margin:0 auto}
       label{color:#cbd5dd}
-      input{width:100%;padding:10px;border-radius:8px;border:1px solid rgba(0,0,0,0.3);background:rgba(255,255,255,0.02);color:#fff;margin-bottom:12px}
-      .btn{background:linear-gradient(90deg,var(--red-1),#C7080C);padding:10px 14px;border-radius:8px;border:0;color:#fff;font-weight:800;cursor:pointer}
+      input, select{width:100%;padding:10px;border-radius:8px;border:1px solid rgba(0,0,0,0.3);background:rgba(255,255,255,0.02);color:#fff;margin-bottom:12px}
+      .btn{background:linear-gradient(90deg,var(--red-1),var(--red-2));padding:10px 14px;border-radius:8px;border:0;color:#fff;font-weight:800;cursor:pointer}
+
+      @media(max-width:980px){.inner{flex-direction:column}.sidebar{width:100%;flex-direction:row;gap:12px;overflow:auto}.main{padding-left:0}.topbar{justify-content:flex-start}}
     </style>
   </head>
   <body>
     <div class="wrap">
-      <div class="card">
-        <h2 style="text-align:center;margin-bottom:18px">Editar usuario</h2>
-
-        @if($errors->any())
-          <div style="color:#ffdddd;margin-bottom:12px">
-            <ul style="margin:0;padding-left:18px">
-              @foreach($errors->all() as $err)
-                <li>{{ $err }}</li>
-              @endforeach
-            </ul>
-          </div>
-        @endif
-
-        @if(isset($user))
-          <form method="POST" action="{{ route('admin.usuarios.update', $user) }}">
-            @csrf
-            @method('PATCH')
-
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:36px;align-items:start">
-              <div>
-                <label>Nombre</label>
-                <input name="name" value="{{ old('name', $user->name) }}" required />
-
-                <label>Apellido</label>
-                <input name="lastname" value="{{ old('lastname', $user->lastname) }}" required />
-
-                <label>Correo</label>
-                <input name="email" type="email" value="{{ old('email', $user->email) }}" required />
-              </div>
-
-              <div>
-                <label>Contraseña</label>
-                <input name="password" type="password" placeholder="Dejar vacío para no cambiar" />
-
-                <label>Confirmar contraseña</label>
-                <input name="password_confirmation" type="password" placeholder="Confirmar contraseña" />
-
-                <label>Rol</label>
-                <select name="role" style="width:100%;padding:10px;border-radius:8px;border:1px solid rgba(0,0,0,0.3);background:rgba(255,255,255,0.02);color:#fff;margin-top:6px">
-                  <option value="">-- seleccionar --</option>
-                  <option value="admin" {{ (old('role', $user->role) == 'admin') ? 'selected' : '' }}>admin</option>
-                  <option value="user" {{ (old('role', $user->role) == 'user') ? 'selected' : '' }}>user</option>
-                </select>
-              </div>
+      <div class="outer">
+        <div class="inner">
+          <aside class="sidebar">
+            <div>
+              <div class="brand">Bitácora</div>
+              <div class="dept">Departamento de redes y servidores</div>
             </div>
 
-            <div style="text-align:center;margin-top:22px">
-              <button class="btn" type="submit">Confirmar</button>
+            <nav class="menu" aria-label="Menú principal">
+              <div style="position:relative">
+                <button id="adminBtn" onclick="toggleAdmin()" style="width:100%;text-align:left;padding:10px 12px;border-radius:8px;border:0;background:transparent;color:#cbd5dd;font-weight:700;cursor:pointer">Administrador ▾</button>
+                <div id="adminSub" class="submenu" style="display:none;margin-top:6px;">
+                  @if(Auth::check() && Auth::user()->role === 'admin')
+                    <a href="{{ route('admin.usuarios') }}" style="display:block;padding:8px 12px;border-radius:6px;color:#cbd5dd;text-decoration:none">Usuarios</a>
+                  @endif
+                  <a href="{{ route('admin.rutinas') }}" style="display:block;padding:8px 12px;border-radius:6px;color:#cbd5dd;text-decoration:none">Rutinas</a>
+                </div>
+              </div>
+
+              <a href="{{ route('admin.gestion') }}">Gestión</a>
+              <a href="{{ route('admin.reportes') }}">Reportes</a>
+            </nav>
+
+            <div class="user-bottom" style="position:relative">
+              <button id="userBtn" onclick="toggleUser()" style="background:transparent;border:0;color:#cbd5dd;font-weight:700;cursor:pointer">@auth {{ Auth::user()->name }} {{ Auth::user()->lastname ?? '' }} @else Usuario @endauth ▴</button>
+              <div id="userSub" class="submenu" style="display:none;margin-top:6px;">
+                <a href="{{ route('user.info') }}" style="display:block;padding:8px 12px;border-radius:6px;color:#cbd5dd;text-decoration:none">Información</a>
+                <form method="POST" action="{{ route('logout') }}" style="margin:6px 0 0">
+                  @csrf
+                  <button type="submit" style="display:block;padding:8px 12px;border-radius:6px;color:#cbd5dd;background:transparent;border:0;text-align:left;width:100%">Salir</button>
+                </form>
+              </div>
             </div>
-          </form>
-        @else
-          <p>No se encontró el usuario.</p>
-        @endif
+          </aside>
+
+          <main class="main">
+            <div class="topbar">
+              <div class="title-pill">Usuarios</div>
+            </div>
+
+            <div class="content">
+              <div class="card">
+                <h2 style="margin-top:0">Editar usuario</h2>
+                <form method="POST" action="{{ route('admin.usuarios.update', $user->id) }}">
+                  @csrf
+                  @method('PATCH')
+                  <label>Nombre</label>
+                  <input name="name" value="{{ $user->name }}" placeholder="Nombre">
+                  <label>Apellido</label>
+                  <input name="lastname" value="{{ $user->lastname }}" placeholder="Apellido">
+                  <label>Correo</label>
+                  <input name="email" value="{{ $user->email }}" placeholder="correo@ejemplo.com">
+                  <label>Rol</label>
+                  <select name="role">
+                    <option value="">-- seleccionar --</option>
+                    <option value="admin" {{ $user->role=='admin' ? 'selected' : '' }}>admin</option>
+                    <option value="user" {{ $user->role=='user' ? 'selected' : '' }}>user</option>
+                  </select>
+                  <label>Contraseña (opcional)</label>
+                  <input name="password" type="password" placeholder="Dejar vacío para no cambiar" />
+                  <label>Confirmar contraseña</label>
+                  <input name="password_confirmation" type="password" placeholder="Confirmar contraseña" />
+                  <div style="margin-top:12px;text-align:right">
+                    <button class="btn" type="submit">Guardar</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </main>
+        </div>
       </div>
     </div>
+
+    <script>
+      function toggleAdmin(){var sub=document.getElementById('adminSub');if(!sub)return;sub.style.display=(sub.style.display==='none'||sub.style.display==='')?'block':'none';}
+      function toggleUser(){var sub=document.getElementById('userSub');if(!sub)return;sub.style.display=(sub.style.display==='none'||sub.style.display==='')?'block':'none';}
+    </script>
   </body>
 </html>

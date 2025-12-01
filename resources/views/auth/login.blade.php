@@ -14,11 +14,11 @@
         --input-bg:rgba(255,255,255,0.03);
         --glass-border:rgba(255,255,255,0.04);
       }
-      html,body{height:100%;margin:0;font-family:Segoe UI, Roboto, Helvetica, Arial, sans-serif;background:linear-gradient(180deg,var(--dark-1) 0%, #16181a 60%);color:#e6eef2}
+        html,body{height:100%;margin:0;font-family:Segoe UI, Roboto, Helvetica, Arial, sans-serif;background:linear-gradient(180deg,var(--dark-1) 0%, #16181a 60%);color:#e6eef2}
 
-      .wrap{min-height:100%;display:flex;align-items:center;justify-content:center;padding:36px}
-      .outer{width:100%;max-width:1100px;border-radius:14px;padding:20px;background:transparent}
-      .inner{background:var(--card-bg);border-radius:12px;padding:48px 56px;display:flex;justify-content:center;align-items:center;min-height:420px;border:1px solid var(--glass-border);box-shadow:0 20px 50px rgba(0,0,0,0.6)}
+        .wrap{min-height:100%;display:flex;align-items:center;justify-content:center;padding:36px}
+        .outer{width:100%;max-width:1100px;border-radius:14px;padding:20px;background:transparent}
+        .inner{background:var(--card-bg);border-radius:12px;padding:48px 56px;display:flex;justify-content:center;align-items:center;min-height:420px;border:1px solid var(--glass-border);box-shadow:0 20px 50px rgba(0,0,0,0.6)}
 
       .form-wrap{width:100%;max-width:520px}
       h2{margin:0 0 22px;font-size:20px;text-align:center;color:#fff;font-weight:700}
