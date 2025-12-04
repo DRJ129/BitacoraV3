@@ -74,7 +74,7 @@
               </div>
 
               <a href="{{ route('admin.gestion') }}">Gestión</a>
-              <a href="#">Reportes</a>
+              <a href="{{ route('admin.reportes') }}">Reportes</a>
             </nav>
 
             <div class="user-bottom" style="position:relative">

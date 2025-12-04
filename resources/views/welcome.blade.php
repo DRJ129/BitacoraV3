@@ -1,82 +1,95 @@
 <!doctype html>
 <html lang="es">
   <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Bitácora - Inicio</title>
-    <style>
-      /* Paleta proporcionada:
-        #E22227, #C7080C, #6C0102, #440101, #222B31, #55666E
-      */
-      :root{
-        --red-1:#E22227; /* más brillante */
-        --red-2:#C7080C;
-        --red-3:#6C0102;
-        --red-4:#440101; /* más oscuro */
-        --dark-1:#222B31; /* fondo oscuro */
-        --muted:#55666E; /* gris azulado */
-        --card-bg:rgba(34,43,49,0.85);
-        --glass-border:rgba(255,255,255,0.06);
-      }
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 
-      html,body{height:100%;margin:0;font-family:Segoe UI,Roboto,Helvetica,Arial,sans-serif;background:linear-gradient(180deg,var(--dark-1) 0%, #16181a 60%), radial-gradient(circle at 10% 30%, rgba(226,34,39,0.12), transparent 25%), radial-gradient(circle at 90% 70%, rgba(85,102,110,0.06), transparent 20%);background-blend-mode:overlay;background-color:var(--dark-1);color:var(--muted)}
-
-      .wrap{min-height:100%;display:flex;align-items:center;justify-content:center;padding:48px}
-
-      .outer{
-        width:100%;max-width:1100px;border-radius:14px;padding:28px;background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(0,0,0,0.04));box-shadow:0 20px 50px rgba(0,0,0,0.6);border:1px solid rgba(255,255,255,0.02);
-      }
-
-      .inner{
-        background:var(--card-bg);border-radius:12px;padding:56px 44px;display:flex;justify-content:space-between;align-items:center;min-height:320px;border:1px solid var(--glass-border);backdrop-filter: blur(6px);
-      }
-
-  /* Centrado vertical de los bloques */
-  .left{flex:1;padding-right:28px;display:flex;flex-direction:column;justify-content:center}
-  .title{font-size:36px;font-weight:800;margin:0 0 8px;color:var(--red-1);letter-spacing:0.6px}
-  .subtitle{font-size:16px;color:#d1d5db;margin:0}
-
-  /* Botones alineados al centro verticalmente y a la derecha visualmente */
-  .right{display:flex;flex-direction:column;justify-content:center;align-items:flex-end;gap:14px}
-
-      .links{display:flex;flex-direction:column;gap:12px}
-      .links a{display:inline-block;text-decoration:none;font-weight:700;padding:10px 18px;border-radius:8px;min-width:140px;text-align:center}
-      .links a.login{background:linear-gradient(90deg,var(--muted),#434e56);color:#fff;border:1px solid rgba(255,255,255,0.04);box-shadow:0 6px 18px rgba(0,0,0,0.4)}
-      .links a.register{background:linear-gradient(90deg,var(--red-1),var(--red-2));color:#fff;border:1px solid rgba(0,0,0,0.25);box-shadow:0 8px 24px rgba(200,0,0,0.12)}
-
-      /* Tarjetas de color (opcional, estilo de la paleta en el centro) */
-      /* La paleta es solo de referencia; ocultada para replicar la maqueta limpia */
-      .palette{display:none}
-     
-      @media(max-width:820px){
-        .inner{flex-direction:column;align-items:flex-start;padding:36px}
-        .right{width:100%;align-items:flex-start}
-        .links{flex-direction:row}
-        .links a{min-width:120px}
-        .left{padding-right:0}
-      }
-    </style>
   </head>
   <body>
-    <div class="wrap">
-      <div class="outer">
-        <div class="inner">
-          <div class="left">
-            <h1 class="title">Bitácora</h1>
-            <p class="subtitle">Departamento de redes y servidores</p>
+    <div class="min-h-screen flex items-center justify-center px-6 py-12 md:px-12">
+      <div
+        class="w-full max-w-[1100px] rounded-[14px] border border-[rgba(255,255,255,0.02)]
+               bg-[linear-gradient(180deg,rgba(255,255,255,0.02),rgba(0,0,0,0.04))]
+               shadow-[0_20px_50px_rgba(0,0,0,0.6)] p-7"
+      >
+        <div
+          class="flex min-h-80 flex-col items-start gap-8
+                 rounded-xl border border-[--glass-border]
+                 bg-[--card-bg] px-9 py-9
+                 backdrop-blur-sm
+                 md:flex-row md:items-center md:justify-between md:px-11 md:py-14"
+        >
+        
+          <!-- Left -->
+          <div class="flex flex-1 flex-col justify-center md:pr-7">
+            <h1
+              class="mb-2 text-[36px] font-extrabold tracking-[0.06em] text-[--red-1]"
+            >
+              Bitácora
+            </h1>
+            <p class="text-base text-slate-300">
+              Departamento de redes y servidores
+            </p>
           </div>
 
-          <div class="right">
-            <div class="links">
+          <!-- Right -->
+          <div
+            class="flex w-full flex-col items-start justify-center gap-3.5
+                   md:w-auto md:items-end"
+          >
+            <div class="flex flex-row gap-3 md:flex-col">
               @if (Route::has('login'))
-                <a href="{{ route('login') }}" class="login">Iniciar sesión</a>
+                <a
+                  href="{{ route('login') }}"
+                  class="inline-flex min-w-[120px] md:min-w-[140px]
+                         items-center justify-center rounded-lg
+                         border border-[rgba(255,255,255,0.04)]
+                         bg-[linear-gradient(90deg,var(--muted),#434e56)]
+                         px-4 py-2.5 text-center font-bold text-white
+                         shadow-[0_6px_18px_rgba(0,0,0,0.4)]"
+                >
+                  Iniciar sesión
+                </a>
               @else
-                <a href="#" class="login">Iniciar sesión</a>
+                <a
+                  href="#"
+                  class="inline-flex min-w-[120px] md:min-w-[140px]
+                         items-center justify-center rounded-lg
+                         border border-[rgba(255,255,255,0.04)]
+                         bg-[linear-gradient(90deg,var(--muted),#434e56)]
+                         px-4 py-2.5 text-center font-bold text-white
+                         shadow-[0_6px_18px_rgba(0,0,0,0.4)]"
+                >
+                  Iniciar sesión
+                </a>
               @endif
+
               @if (Route::has('register'))
-                <a href="{{ route('register') }}" class="register">Registrarse</a>
+                <a
+                  href="{{ route('register') }}"
+                  class="inline-flex min-w-[120px] md:min-w-[140px]
+                         items-center justify-center rounded-lg
+                         border border-[rgba(0,0,0,0.25)]
+                         bg-[linear-gradient(90deg,var(--red-1),var(--red-2))]
+                         px-4 py-2.5 text-center font-bold text-white
+                         shadow-[0_8px_24px_rgba(200,0,0,0.12)]"
+                >
+                  Registrarse
+                </a>
               @else
-                <a href="#" class="register">Registrarse</a>
+                <a
+                  href="#"
+                  class="inline-flex min-w-[120px] md:min-w-[140px]
+                         items-center justify-center rounded-lg
+                         border border-[rgba(0,0,0,0.25)]
+                         bg-[linear-gradient(90deg,var(--red-1),var(--red-2))]
+                         px-4 py-2.5 text-center font-bold text-white
+                         shadow-[0_8px_24px_rgba(200,0,0,0.12)]"
+                >
+                  Registrarse
+                </a>
               @endif
             </div>
           </div>
