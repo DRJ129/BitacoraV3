@@ -5,9 +5,9 @@
 
 @section('content')
 
-    <main class="main">
-        <div class="topbar">
-            <div class="title-pill">Usuarios</div>
+    <main class="border">
+        <div class="">
+            <div class="">Usuarios</div>
         </div>
 
         <div class="content">
