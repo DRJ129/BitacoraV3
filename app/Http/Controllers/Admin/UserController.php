@@ -22,8 +22,8 @@ class UserController extends Controller
     }
 
     // Crear nuevo usuario
-    public function store(Request $request)
-    {
+    public function store(Request $request) 
+    {       
         if (!Auth::check() || Auth::user()->role !== 'admin') {
             return redirect('/')->with('error', 'No autorizado');
         }

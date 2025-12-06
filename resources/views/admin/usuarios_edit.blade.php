@@ -3,8 +3,9 @@
 
 @section('content')
     <main class="main">
-        <div class="topbar">
-            <div class="title-pill">Usuarios</div>
+        <div class="">
+            <h2 class="text-sm text-center font-bold tracking-tight text-heading md:text-sm lg:text-2xl">
+                Editar Usuarios</h2>
         </div>
 
         <div class="content">

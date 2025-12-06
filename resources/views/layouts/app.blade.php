@@ -181,7 +181,7 @@
 
                 </div>
 
-                <div class="flex  justify-center  rounded-base mb-4 border border-white">
+                <div class="flex flex-col min-h-screen p-4  rounded-base mb-4 border border-white">
 
 
                     @yield('content')
@@ -192,8 +192,8 @@
         </div>
 
     </div>
-    @stack('js')
     <script src="https://cdn.jsdelivr.net/npm/flowbite@4.0.1/dist/flowbite.min.js"></script>
+    @stack('js')
     <script>
         // On page load or when changing themes, best to add inline in `head` to avoid FOUC
         if (localStorage.getItem('color-theme') === 'dark' || (!('color-theme' in localStorage) && window.matchMedia(

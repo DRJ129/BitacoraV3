@@ -164,9 +164,9 @@
         gap: 12px;
         margin-bottom: 12px;
     }
-    .form-row label {
+    /* .form-row label {
         min-width: 80px;
-    }
+    } */
 
     .results {
         margin-top: 18px;
@@ -194,7 +194,7 @@
     .card {
         width: 100%;
     }
-
+/* 
     label {
         color: #cbd5dd;
     }
@@ -208,7 +208,7 @@
         background: rgba(255, 255, 255, 0.02);
         color: #fff;
         margin-bottom: 12px;
-    }
+    } */
     /* edit user end */
 
     /* usuarios page */
@@ -224,7 +224,7 @@
         color: var(--red-1);
     }
 
-    table {
+    /* table {
         width: 100%;
         border-collapse: collapse;
         margin-top: 12px;
@@ -241,7 +241,7 @@
     th {
         font-weight: 700;
         color: #9fb0b8;
-    }
+    } */
 
     .actions {
         display: flex;
@@ -270,10 +270,10 @@
         margin-bottom: 10px;
     }
 
-    .info-row label {
+    /* .info-row label {
         min-width: 120px;
         color: #9fb0b8;
-    }
+    } */
 
     .info-row .value {
         color: #e6eef2;
@@ -342,10 +342,10 @@
         margin-bottom: 8px;
     }
 
-    .check-item input[type="checkbox"] {
+    /* .check-item input[type="checkbox"] {
         width: 18px;
         height: 18px;
-    }
+    } */
 
     .completed {
         text-decoration: line-through;
