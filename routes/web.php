@@ -15,7 +15,7 @@ Route::get('/', function () {
     if (Auth::check()) {
         return view('dashboard');
     }
-    return view('welcome');
+    return view('auth.login');
 });
 
 // Ruta para la vista de login creada manualmente
