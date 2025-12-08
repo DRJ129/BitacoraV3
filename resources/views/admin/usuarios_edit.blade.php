@@ -2,7 +2,6 @@
 @section('title', 'Bitácora - Editar usuario')
 
 @section('content')
-    <main class="main">
         <div class="">
             <h2 class="text-sm text-center font-bold tracking-tight text-heading md:text-sm lg:text-2xl">
                 Editar Usuarios</h2>
@@ -37,7 +36,7 @@
             <input id="password_confirmation" name="password_confirmation" type="password"
                 placeholder="Confirmar contraseña"
                 class="bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand block w-full px-2.5 py-2 shadow-xs placeholder:text-body" />
-            <div style="margin-top:12px;text-align:right">
+            <div class="mt-4 text-right">
                 <button type="submit"
                     class="text-white bg-brand box-border border border-transparent hover:bg-brand-strong focus:ring-4 focus:ring-brand-medium shadow-xs font-medium leading-5 rounded-base text-sm px-4 py-2.5 focus:outline-none">Guardar</button>
             </div>
