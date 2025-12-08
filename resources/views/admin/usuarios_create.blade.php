@@ -8,7 +8,7 @@
     </div>
     @if (session('success'))
         <div class="p-4 mb-4 text-sm text-fg-success-strong rounded-base bg-success-soft" role="alert">
-            <span class="font-medium">{{ session('success') }}</span> 
+            <span class="font-medium">{{ session('success') }}</span>
         </div>
     @endif
 
