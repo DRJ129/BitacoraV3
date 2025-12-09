@@ -214,7 +214,6 @@
         }
       }
 
-      /* attach event listeners to buttons rendered with data-id attributes */
       (function bindIncidenciaButtons(){
         var edits = document.querySelectorAll('.btn-edit');
         edits.forEach(function(b){

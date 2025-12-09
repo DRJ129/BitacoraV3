@@ -220,6 +220,9 @@ class ReporteController extends Controller
 
         if ($fromDate->gt($toDate)) { $tmp = $fromDate; $fromDate = $toDate; $toDate = $tmp; }
 
+        // current user id (needed to filter routines/incidencias per user)
+        $userId = Auth::id();
+
         $byDay = [];
         $cursor = $fromDate->copy()->startOfDay();
         while ($cursor->lte($toDate)) {
