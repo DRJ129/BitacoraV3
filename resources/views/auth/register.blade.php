@@ -1,107 +1,70 @@
-<!doctype html>
-<html lang="es">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Registro - Bitácora</title>
-    <style>
-      :root{
-        --red-1:#E22227;
-        --red-2:#C7080C;
-        --dark-1:#222B31;
-        --muted:#55666E;
-        --card-bg:rgba(34,43,49,0.92);
-        --input-bg:rgba(255,255,255,0.03);
-        --glass-border:rgba(255,255,255,0.04);
-      }
-      html,body{height:100%;margin:0;font-family:Segoe UI, Roboto, Helvetica, Arial, sans-serif;background:linear-gradient(180deg,var(--dark-1) 0%, #16181a 60%);color:#e6eef2}
+@extends('layouts.app')
 
-      .wrap{min-height:100%;display:flex;align-items:center;justify-content:center;padding:36px}
-      .outer{width:100%;max-width:1200px;border-radius:14px;padding:20px;background:transparent}
-      .inner{background:var(--card-bg);border-radius:12px;padding:48px 36px;display:flex;justify-content:center;align-items:center;min-height:420px;border:1px solid var(--glass-border);box-shadow:0 20px 50px rgba(0,0,0,0.6)}
 
-      .form-grid{width:100%;display:grid;grid-template-columns:1fr 1fr;gap:28px;align-items:start;max-width:960px}
-      .col{display:flex;flex-direction:column;gap:12px}
-      h2{margin:0 0 8px;font-size:20px;text-align:center;color:#fff;font-weight:700}
+@section('title', 'Bitacora - Registro')
 
-      .field{display:flex;flex-direction:column}
-      label{font-size:14px;color:#cbd5dd;margin-bottom:6px}
-      input[type="text"], input[type="email"], input[type="password"]{width:100%;padding:12px 14px;border-radius:8px;border:1px solid rgba(0,0,0,0.3);background:var(--input-bg);color:#fff;outline:none}
-      input::placeholder{color:rgba(255,255,255,0.38)}
+@section('content')
 
-      .submit-wrap{display:flex;flex-direction:column;align-items:center;margin-top:18px;grid-column:1 / -1}
-      button[type="submit"]{background:linear-gradient(90deg,var(--red-1),var(--red-2));color:#fff;padding:10px 22px;border-radius:8px;border:0;font-weight:800;cursor:pointer;box-shadow:0 10px 30px rgba(226,34,39,0.12)}
+    <div class="min-h-screen flex items-center justify-center px-6 py-12 md:px-12">
 
-      .below{margin-top:10px;text-align:center}
-      .below a{color:#cbd5dd;text-decoration:none}
-      .below a.login-link{color:var(--red-1);font-weight:700}
-
-      .error{background:rgba(200,20,20,0.06);border:1px solid rgba(200,20,20,0.18);color:#ffdddd;padding:10px;border-radius:6px;margin-bottom:12px}
-
-      @media(max-width:900px){.form-grid{grid-template-columns:1fr;gap:18px}.submit-wrap{grid-column:1}}
-    </style>
-  </head>
-  <body>
-    <div class="wrap">
-      <div class="outer">
-        <div class="inner">
-          <div style="width:100%;max-width:980px">
-            <h2 style="text-align:center">Registro</h2>
-
+        <div class="bg-neutral-primary-soft block md:min-w-lg p-6 border border-default rounded-base shadow-xs">
+            <h5 class="mb-3 text-2xl font-semibold tracking-tight text-heading leading-8">Registro de usuario</h5>
             @if ($errors->any())
-              <div class="error">
-                <ul style="margin:0;padding-left:18px">
-                  @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                  @endforeach
-                </ul>
-              </div>
+                <div class="error">
+                    <ul style="margin:0;padding-left:18px">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
             @endif
 
-            <form method="POST" action="{{ route('register') }}">
-              @csrf
-
-              <div class="form-grid">
-                <div class="col">
-                  <div class="field">
-                    <label for="name">Nombre</label>
-                    <input id="name" type="text" name="name" value="{{ old('name') }}" placeholder="Nombre" required>
-                  </div>
-
-                  <div class="field">
-                    <label for="lastname">Apellido</label>
-                    <input id="lastname" type="text" name="lastname" value="{{ old('lastname') }}" placeholder="Apellido" required>
-                  </div>
-
-                  <div class="field">
-                    <label for="email">Correo</label>
-                    <input id="email" type="email" name="email" value="{{ old('email') }}" placeholder="tucorreo@ejemplo.com" required>
-                  </div>
+            <form method="POST" action="{{ route('register') }}" class="min-w-xs mx-auto space-y-4 mt-6">
+                @csrf
+                <div>
+                    <label for="name" name="name" class="block mb-2.5 text-sm font-medium text-heading">Nombre</label>
+                    <input type="text" id="name" value="{{ old('name') }}"
+                        class="bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand block w-full px-2.5 py-2 shadow-xs placeholder:text-body"
+                        placeholder="Nombre" name="name" required />
                 </div>
-
-                <div class="col">
-                  <div class="field">
-                    <label for="password">Contraseña</label>
-                    <input id="password" type="password" name="password" placeholder="********" required>
-                  </div>
-
-                  <div class="field">
-                    <label for="password_confirmation">Confirmar contraseña</label>
-                    <input id="password_confirmation" type="password" name="password_confirmation" placeholder="********" required>
-                  </div>
+                <div>
+                    <label for="lastname" class="block mb-2.5 text-sm font-medium text-heading">Apellido</label>
+                    <input type="text" id="lastname" name="lastname" value="{{ old('lastname') }}"
+                        class="bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand block w-full px-2.5 py-2 shadow-xs placeholder:text-body"
+                        placeholder="Apellido" required />
                 </div>
-
+                <div>
+                    <label for="email" class="block mb-2.5 text-sm font-medium text-heading">Correo</label>
+                    <input type="text" id="email" value="{{ old('email') }}"
+                        class="bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand block w-full px-2.5 py-2 shadow-xs placeholder:text-body"
+                        name="email" placeholder="correo@ejemplo.com" required />
+                </div>
+                <div>
+                    <label for="password" class="block mb-2.5 text-sm font-medium text-heading">Contraseña</label>
+                    <input type="password" id="email"
+                        class="bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand block w-full px-2.5 py-2 shadow-xs placeholder:text-body"
+                        name="password" placeholder="********" required />
+                </div>
+                <div>
+                    <label for="password_confirmation" class="block mb-2.5 text-sm font-medium text-heading">Confirmar
+                        contraseña</label>
+                    <input type="password" id="email"
+                        class="bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand block w-full px-2.5 py-2 shadow-xs placeholder:text-body"
+                        name="password_confirmation" placeholder="********" required />
+                </div>
                 <div class="submit-wrap">
-                  <button type="submit">Registrarse</button>
-                  <div class="below">
-                    <span>¿Ya tienes cuenta? <a class="login-link" href="{{ route('login') }}">Iniciar sesión</a></span>
-                  </div>
+                    <div class="below">
+                        <span class="text-black dark:text-white mr-2">¿Ya tienes cuenta? <a
+                                class="text-blue-600 hover:text-blue-300" href="{{ route('login') }}">Iniciar
+                                sesión</a></span>
+                    </div>
                 </div>
-              </div>
+                <div class="text-right">
+                    <button type="submit"
+                        class="text-white bg-brand box-border border border-transparent hover:bg-brand-strong focus:ring-4 focus:ring-brand-medium shadow-xs font-medium leading-5 rounded-base text-sm px-4 py-2.5 focus:outline-none">Registrarse</button>
+                </div>
             </form>
-          </div>
+
         </div>
-      </div>
     </div>
-  </body>
-</html>
+@endsection

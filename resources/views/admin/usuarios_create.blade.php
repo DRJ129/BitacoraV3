@@ -1,119 +1,82 @@
-<!doctype html>
-<html lang="es">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Bitácora - Agregar usuario</title>
-    <style>
-      :root{
-        --red-1:#E22227;
-        --red-2:#C7080C;
-        --dark-1:#222B31;
-        --card-bg:rgba(34,43,49,0.95);
-        --sidebar-bg:rgba(20,26,29,0.95);
-        --glass-border:rgba(255,255,255,0.03);
-      }
-      html,body{height:100%;margin:0;font-family:Segoe UI, Roboto, Helvetica, Arial, sans-serif;background:linear-gradient(180deg,var(--dark-1) 0%, #16181a 60%);color:#e6eef2}
-      .wrap{min-height:100%;display:flex;align-items:center;justify-content:center;padding:28px}
-      .outer{width:100%;max-width:1300px;border-radius:14px;padding:18px;background:transparent}
-      .inner{background:var(--card-bg);border-radius:12px;padding:18px;display:flex;min-height:620px;border:1px solid var(--glass-border);box-shadow:0 30px 70px rgba(0,0,0,0.6)}
-      .sidebar{width:260px;background:var(--sidebar-bg);border-radius:8px;padding:22px;display:flex;flex-direction:column;gap:18px}
-      .brand{font-weight:800;color:var(--red-1);font-size:22px}
-      .dept{font-size:13px;color:#cbd5dd}
-      .menu{display:flex;flex-direction:column;gap:8px;margin-top:10px}
-      .menu a{color:#cbd5dd;text-decoration:none;padding:10px 12px;border-radius:8px;font-weight:600}
-      .menu a:hover{background:rgba(255,255,255,0.02)}
-      .user-bottom{margin-top:auto;font-size:14px;color:#cbd5dd}
-      .main{flex:1;padding-left:28px;display:flex;flex-direction:column}
-      .topbar{display:flex;justify-content:center;align-items:center;padding:6px 0}
-      .title-pill{background:rgba(255,255,255,0.03);padding:10px 40px;border-radius:8px;border:1px solid rgba(255,255,255,0.02);font-weight:700}
-      .content{margin-top:18px;flex:1;border-radius:8px;padding:18px;background:linear-gradient(180deg,rgba(255,255,255,0.01), rgba(0,0,0,0.03));position:relative}
+@extends('layouts.app')
+@section('title', 'Bitácora - Agregar usuario')
 
-      .card{width:100%;max-width:760px;background:rgba(0,0,0,0.12);padding:18px;border-radius:10px;border:1px solid rgba(255,255,255,0.02);margin:0 auto}
-      label{color:#cbd5dd}
-      input, select{width:100%;padding:10px;border-radius:8px;border:1px solid rgba(0,0,0,0.3);background:rgba(255,255,255,0.02);color:#fff;margin-bottom:12px}
-      .btn{background:linear-gradient(90deg,var(--red-1),var(--red-2));padding:10px 14px;border-radius:8px;border:0;color:#fff;font-weight:800;cursor:pointer}
-
-      @media(max-width:980px){.inner{flex-direction:column}.sidebar{width:100%;flex-direction:row;gap:12px;overflow:auto}.main{padding-left:0}.topbar{justify-content:flex-start}}
-    </style>
-  </head>
-  <body>
-    <div class="wrap">
-      <div class="outer">
-        <div class="inner">
-          <aside class="sidebar">
-            <div>
-              <div class="brand">Bitácora</div>
-              <div class="dept">Departamento de redes y servidores</div>
-            </div>
-
-            <nav class="menu" aria-label="Menú principal">
-              <div style="position:relative">
-                <button id="adminBtn" onclick="toggleAdmin()" style="width:100%;text-align:left;padding:10px 12px;border-radius:8px;border:0;background:transparent;color:#cbd5dd;font-weight:700;cursor:pointer">Administrador ▾</button>
-                <div id="adminSub" class="submenu" style="display:none;margin-top:6px;">
-                  @if(Auth::check() && Auth::user()->role === 'admin')
-                    <a href="{{ route('admin.usuarios') }}" style="display:block;padding:8px 12px;border-radius:6px;color:#cbd5dd;text-decoration:none">Usuarios</a>
-                  @endif
-                  <a href="{{ route('admin.rutinas') }}" style="display:block;padding:8px 12px;border-radius:6px;color:#cbd5dd;text-decoration:none">Rutinas</a>
-                </div>
-              </div>
-
-              <a href="{{ route('admin.gestion') }}">Gestión</a>
-              <a href="{{ route('admin.reportes') }}">Reportes</a>
-            </nav>
-
-            <div class="user-bottom" style="position:relative">
-              <button id="userBtn" onclick="toggleUser()" style="background:transparent;border:0;color:#cbd5dd;font-weight:700;cursor:pointer">@auth {{ Auth::user()->name }} {{ Auth::user()->lastname ?? '' }} @else Usuario @endauth ▴</button>
-              <div id="userSub" class="submenu" style="display:none;margin-top:6px;">
-                <a href="{{ route('user.info') }}" style="display:block;padding:8px 12px;border-radius:6px;color:#cbd5dd;text-decoration:none">Información</a>
-                <form method="POST" action="{{ route('logout') }}" style="margin:6px 0 0">
-                  @csrf
-                  <button type="submit" style="display:block;padding:8px 12px;border-radius:6px;color:#cbd5dd;background:transparent;border:0;text-align:left;width:100%">Salir</button>
-                </form>
-              </div>
-            </div>
-          </aside>
-
-          <main class="main">
-            <div class="topbar">
-              <div class="title-pill">Usuarios</div>
-            </div>
-
-            <div class="content">
-              <div class="card">
-                <h2 style="margin-top:0">Agregar usuario</h2>
-                <form method="POST" action="{{ route('admin.usuarios.store') }}">
-                  @csrf
-                  <label>Nombre</label>
-                  <input name="name" placeholder="Nombre">
-                  <label>Apellido</label>
-                  <input name="lastname" placeholder="Apellido">
-                  <label>Correo</label>
-                  <input name="email" placeholder="correo@ejemplo.com">
-                  <label>Rol</label>
-                  <select name="role">
-                    <option value="">-- seleccionar --</option>
-                    <option value="admin">admin</option>
-                    <option value="user">user</option>
-                  </select>
-                  <label>Contraseña</label>
-                  <input name="password" type="password" placeholder="********">
-                  <label>Confirmar contraseña</label>
-                  <input name="password_confirmation" type="password" placeholder="********">
-                  <div style="margin-top:12px;text-align:right">
-                    <button class="btn" type="submit">Crear</button>
-                  </div>
-                </form>
-              </div>
-            </div>
-          </main>
-        </div>
-      </div>
+@section('content')
+    <div class="">
+        <h2 class="text-sm text-center font-bold tracking-tight text-heading md:text-sm lg:text-2xl">
+            Agregar Usuarios</h2>
     </div>
+    @if (session('success'))
+        <div class="p-4 mb-4 text-sm text-fg-success-strong rounded-base bg-success-soft" role="alert">
+            <span class="font-medium">{{ session('success') }}</span>
+        </div>
+    @endif
 
+    <form method="POST" action="{{ route('admin.usuarios.store') }}" class="min-w-2xl mx-auto space-y-4 mt-6">
+        @csrf
+        <div class="flex flex-col md:flex-row gap-4 justify-between items-center">
+            <div class="w-[50%]">
+                <label for="name" name="name" class="block mb-2.5 text-sm font-medium text-heading">Nombre</label>
+                <input type="text" id="name"
+                    class="bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand block w-full px-2.5 py-2 shadow-xs placeholder:text-body"
+                    placeholder="Nombre" name="name" required />
+            </div>
+            <div class="w-[50%]">
+                <label for="lastname" class="block mb-2.5 text-sm font-medium text-heading">Apellido</label>
+                <input type="text" id="lastname" name="lastname"
+                    class="bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand block w-full px-3 py-2.5 shadow-xs placeholder:text-body"
+                    placeholder="Apellido" required />
+            </div>
+        </div>
+        <div>
+            <label for="email" class="block mb-2.5 text-sm font-medium text-heading">Correo</label>
+            <input type="text" id="email"
+                class="bg-neutral-secondary-medium border border-default-medium text-heading text-base rounded-base focus:ring-brand focus:border-brand block w-full px-3.5 py-3 shadow-xs placeholder:text-body"
+                name="email" placeholder="correo@ejemplo.com" required />
+        </div>
+        <div>
+            <label for="visitors" class="block mb-2.5 text-sm font-medium text-heading">Rol</label>
+            <select name="role"
+                class="block w-full px-3 py-2.5 bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand shadow-xs placeholder:text-body">
+                <option value="">-- seleccionar --</option>
+                <option value="admin">admin</option>
+                <option value="user">user</option>
+            </select>
+        </div>
+        <div>
+            <label for="password" class="block mb-2.5 text-sm font-medium text-heading">Contraseña</label>
+            <input type="password" id="email"
+                class="bg-neutral-secondary-medium border border-default-medium text-heading text-base rounded-base focus:ring-brand focus:border-brand block w-full px-3.5 py-3 shadow-xs placeholder:text-body"
+                name="password" placeholder="********" required />
+        </div>
+        <div>
+            <label for="password_confirmation" class="block mb-2.5 text-sm font-medium text-heading">Confirmar
+                contraseña</label>
+            <input type="password" id="email"
+                class="bg-neutral-secondary-medium border border-default-medium text-heading text-base rounded-base focus:ring-brand focus:border-brand block w-full px-3.5 py-3 shadow-xs placeholder:text-body"
+                name="password_confirmation" placeholder="********" required />
+        </div>
+        <div>
+            <button type="submit"
+                class="text-white bg-brand box-border border border-transparent hover:bg-brand-strong focus:ring-4 focus:ring-brand-medium shadow-xs font-medium leading-5 rounded-base text-sm px-4 py-2.5 focus:outline-none">Guardar</button>
+        </div>
+    </form>
+
+@endsection
+
+
+@push('js')
     <script>
-      function toggleAdmin(){var sub=document.getElementById('adminSub');if(!sub)return;sub.style.display=(sub.style.display==='none'||sub.style.display==='')?'block':'none';}
-      function toggleUser(){var sub=document.getElementById('userSub');if(!sub)return;sub.style.display=(sub.style.display==='none'||sub.style.display==='')?'block':'none';}
+        function toggleAdmin() {
+            var sub = document.getElementById('adminSub');
+            if (!sub) return;
+            sub.style.display = (sub.style.display === 'none' || sub.style.display === '') ? 'block' : 'none';
+        }
+
+        function toggleUser() {
+            var sub = document.getElementById('userSub');
+            if (!sub) return;
+            sub.style.display = (sub.style.display === 'none' || sub.style.display === '') ? 'block' : 'none';
+        }
     </script>
-  </body>
-</html>
+@endpush

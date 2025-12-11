@@ -1,11 +1,404 @@
-@import 'tailwindcss';
-
+@import "tailwindcss";
+@import "flowbite/src/themes/default";
+@plugin "flowbite/plugin";
+@source "../../node_modules/flowbite";
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../storage/framework/views/*.php';
 @source '../**/*.blade.php';
 @source '../**/*.js';
 
-@theme {
+/* Puedes poner tu CSS debajo si quieres */
+
+/* @theme {
     --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
+} */
+@custom-variant dark (&:where(.dark, .dark *));
+@theme {
+    --color-fg-brand-subtle: var(--color-blue-200);
+    --color-fg-brand: var(--color-blue-700);
+    --color-fg-brand-strong: var(--color-blue-900);
+
+    --color-brand-softer: var(--color-blue-50);
+    --color-brand-soft: var(--color-blue-100);
+    --color-brand: var(--color-blue-700);
+    --color-brand-medium: var(--color-blue-200);
+    --color-brand-strong: var(--color-blue-800);
+    
+    --font-sans: 'Inter', 'ui-sans-serif', 'system-ui', '-apple-system', 'system-ui', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'Noto Sans', 'sans-serif', 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+    --font-body: 'Inter', 'ui-sans-serif', 'system-ui', '-apple-system', 'system-ui', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'Noto Sans', 'sans-serif', 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+    --font-mono: 'ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', 'Liberation Mono', 'Courier New', 'monospace';
 }
+@layer components {
+    :root {
+        --red-1: #e22227;
+        --red-2: #c7080c;
+        --dark-1: #222b31;
+        --background-gradi: linear-gradient(180deg, var(--dark-1) 0%, #16181a 60%);
+        --muted: #55666e;
+        --card-bg: rgba(34, 43, 49, 0.95);
+        --sidebar-bg: rgba(20, 26, 29, 0.95);
+        --glass-border: rgba(255, 255, 255, 0.03);
+    }
+
+    /* html,
+    body {
+        height: 100%;
+        margin: 5px;
+        font-family: Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+        background: linear-gradient(180deg,  0%, #16181a 60%);
+        color: #e6eef2;
+    } */
+
+    .wrap {
+        min-height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 28px;
+    }
+
+    .outer {
+        width: 100%;
+        max-width: 1300px;
+        border-radius: 14px;
+        padding: 18px;
+        background: transparent;
+    }
+
+    .inner {
+        background: var(--card-bg);
+        border-radius: 12px;
+        padding: 18px;
+        display: flex;
+        min-height: 620px;
+        border: 1px solid var(--glass-border);
+        box-shadow: 0 30px 70px rgba(0, 0, 0, 0.6);
+    }
+
+    .sidebar {
+        width: 260px;
+        background: var(--sidebar-bg);
+        border-radius: 8px;
+        padding: 22px;
+        display: flex;
+        flex-direction: column;
+        gap: 18px;
+    }
+
+    .brand {
+        font-weight: 800;
+        color: var(--red-1);
+        font-size: 22px;
+    }
+
+    .dept {
+        font-size: 13px;
+        color: #cbd5dd;
+    }
+
+    .menu {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        margin-top: 10px;
+    }
+
+    .menu a {
+        color: #cbd5dd;
+        text-decoration: none;
+        padding: 10px 12px;
+        border-radius: 8px;
+        font-weight: 600;
+    }
+
+    .menu a:hover {
+        background: rgba(255, 255, 255, 0.02);
+    }
+
+    .user-bottom {
+        margin-top: auto;
+        font-size: 14px;
+        color: #cbd5dd;
+    }
+
+    .main {
+        flex: 1;
+        padding-left: 28px;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .topbar {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 6px 0;
+    }
+
+    .title-pill {
+        background: rgba(255, 255, 255, 0.03);
+        padding: 10px 40px;
+        border-radius: 8px;
+        border: 1px solid rgba(255, 255, 255, 0.02);
+        font-weight: 700;
+    }
+
+    .content {
+        margin-top: 18px;
+        flex: 1;
+        border-radius: 8px;
+        padding: 18px;
+        background: linear-gradient(
+            180deg,
+            rgba(255, 255, 255, 0.01),
+            rgba(0, 0, 0, 0.03)
+        );
+        position: relative;
+    }
+
+    /* reports */
+    .form-row {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 12px;
+    }
+    /* .form-row label {
+        min-width: 80px;
+    } */
+
+    .results {
+        margin-top: 18px;
+    }
+
+    .result-box {
+        background: rgba(255, 255, 255, 0.02);
+        padding: 12px;
+        border-radius: 8px;
+        margin-bottom: 8px;
+    }
+    /* end reports */
+
+    /* edit user */
+    .card,
+    .info-card {
+        max-width: 760px;
+        margin: 0 auto;
+        background: rgba(0, 0, 0, 0.12);
+        border-radius: 10px;
+        padding: 18px;
+        border: 1px solid rgba(255, 255, 255, 0.02);
+    }
+
+    .card {
+        width: 100%;
+    }
+/* 
+    label {
+        color: #cbd5dd;
+    }
+
+    input,
+    select {
+        width: 100%;
+        padding: 10px;
+        border-radius: 8px;
+        border: 1px solid rgba(0, 0, 0, 0.3);
+        background: rgba(255, 255, 255, 0.02);
+        color: #fff;
+        margin-bottom: 12px;
+    } */
+    /* edit user end */
+
+    /* usuarios page */
+    .head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 18px;
+    }
+
+    .head h1 {
+        margin: 0;
+        color: var(--red-1);
+    }
+
+    /* table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 12px;
+    }
+
+    th,
+    td {
+        padding: 12px 10px;
+        text-align: left;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.02);
+        color: #d1d5db;
+    }
+
+    th {
+        font-weight: 700;
+        color: #9fb0b8;
+    } */
+
+    .actions {
+        display: flex;
+        gap: 8px;
+    }
+
+    .action-btn {
+        background: transparent;
+        border: 1px solid rgba(255, 255, 255, 0.03);
+        padding: 6px 10px;
+        border-radius: 6px;
+        color: #cbd5dd;
+        cursor: pointer;
+    }
+
+    .action-btn.delete {
+        color: var(--red-1);
+        border-color: rgba(200, 20, 20, 0.12);
+    }
+    /* usuarios page end */
+
+    .info-row {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+
+    /* .info-row label {
+        min-width: 120px;
+        color: #9fb0b8;
+    } */
+
+    .info-row .value {
+        color: #e6eef2;
+        font-weight: 700;
+    }
+
+    .btn-add {
+        background: linear-gradient(90deg, var(--red-1), var(--red-2));
+        color: #fff;
+        padding: 8px 14px;
+        border-radius: 8px;
+        border: 0;
+        font-weight: 700;
+        cursor: pointer;
+    }
+
+    .list {
+        margin-top: 12px;
+    }
+
+    .list-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 12px;
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.02);
+        margin-bottom: 8px;
+        color: #d1d5db;
+    }
+
+    /* Gestión */
+    .date-box {
+        position: absolute;
+        right: 18px;
+        top: 18px;
+        background: rgba(255, 255, 255, 0.02);
+        padding: 12px;
+        border-radius: 8px;
+        border: 1px solid rgba(255, 255, 255, 0.03);
+        text-align: center;
+    }
+
+    .date-box .day {
+        font-weight: 800;
+        color: var(--red-1);
+        font-size: 18px;
+    }
+
+    .date-box .date {
+        color: #cbd5dd;
+        font-size: 13px;
+    }
+
+    .checklist {
+        margin-top: 18px;
+    }
+
+    .check-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 10px;
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.02);
+        margin-bottom: 8px;
+    }
+
+    /* .check-item input[type="checkbox"] {
+        width: 18px;
+        height: 18px;
+    } */
+
+    .completed {
+        text-decoration: line-through;
+        opacity: 0.7;
+    }
+
+    /* incidencias scroll container */
+    .incidencias-list {
+        margin-top: 8px;
+        max-height: 260px;
+        overflow: auto;
+        padding-right: 8px;
+    }
+
+    .incidencias-list .check-item {
+        padding: 12px;
+    }
+
+    /* custom thin scrollbar for webkit browsers */
+    .incidencias-list::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    .incidencias-list::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.06);
+        border-radius: 6px;
+    }
+
+    .incidencias-list::-webkit-scrollbar-track {
+        background: transparent;
+    }
+    /* Gestión end */
+
+    /* responsive global */
+    @media (max-width: 980px) {
+        .inner {
+            flex-direction: column;
+        }
+
+        .sidebar {
+            width: 100%;
+            flex-direction: row;
+            gap: 12px;
+            overflow: auto;
+        }
+
+        .main {
+            padding-left: 0;
+        }
+
+        .topbar {
+            justify-content: flex-start;
+        }
+    }
+}
+
