@@ -47,22 +47,20 @@ Route::delete('/admin/rutinas/{rutina}', [RutinaController::class, 'destroy'])->
 // Página de gestión (checklist de rutinas)
 Route::get('/admin/gestion', function () {
     $routines = App\Models\Rutina::orderBy('id', 'desc')->get();
-    // Mostrar solo incidencias creadas en la fecha actual (orden ascendente para numeración por inserción)
+    // Mostrar incidencias creadas en la fecha actual (orden ascendente para numeración por inserción)
+    // Ahora las incidencias son visibles para todos los usuarios autenticados, pero solo el autor/admin
+    // podrá editarlas/eliminarlas (controlado en el controlador).
     $incidencias = collect();
     if (Auth::check()) {
         $incidencias = App\Models\Incidencia::whereDate('created_at', Carbon::today())
-            ->where('user_id', Auth::id())
+            ->with('user')
             ->orderBy('created_at', 'asc')
             ->get();
     }
 
-    // Obtener completions de hoy para mostrar las rutinas marcadas del día
-    $completedIds = [];
-    if (Auth::check()) {
-        $completedIds = App\Models\RutinaCompletion::whereDate('date', Carbon::today())
-            ->where('user_id', Auth::id())
-            ->pluck('rutina_id')->toArray();
-    }
+    // Obtener completions de hoy para mostrar las rutinas marcadas del día (global, compartidos entre usuarios)
+    $completedIds = App\Models\RutinaCompletion::whereDate('date', Carbon::today())
+        ->pluck('rutina_id')->toArray();
 
     // Mostrar el nombre del día en español usando Carbon
     $dayName = Carbon::now()->locale('es')->isoFormat('dddd');

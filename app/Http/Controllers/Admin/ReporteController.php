@@ -55,9 +55,8 @@ class ReporteController extends Controller
         }
         $routinesDone = Rutina::whereIn('id', $doneRoutineIds)->orderBy('id','desc')->get();
 
-        if ($userId) {
+        if (Auth::check()) {
             $incidencias = Incidencia::whereBetween('created_at', [$from, $to])
-                ->where('user_id', $userId)
                 ->with('user')
                 ->orderBy('created_at', 'asc')
                 ->get();
@@ -69,28 +68,33 @@ class ReporteController extends Controller
         $byDay = null;
         if ($range === 'week') {
             $byDay = [];
-            // ensure starting at startOfWeek (Monday)
-            $start = $from->copy()->startOfDay();
 
             // allow optional sub-range selection inside the week via date inputs from_date and to_date
             $fromDateParam = $request->query('from_date');
             $toDateParam = $request->query('to_date');
 
             try {
-                $fromDate = $fromDateParam ? Carbon::parse($fromDateParam)->startOfDay() : $start->copy()->startOfDay();
+                $fromDate = $fromDateParam ? Carbon::parse($fromDateParam)->startOfDay() : $from->copy()->startOfDay();
             } catch (\Exception $e) {
-                $fromDate = $start->copy()->startOfDay();
+                $fromDate = $from->copy()->startOfDay();
             }
 
             try {
-                $toDate = $toDateParam ? Carbon::parse($toDateParam)->endOfDay() : $start->copy()->endOfDay();
+                $toDate = $toDateParam ? Carbon::parse($toDateParam)->endOfDay() : $from->copy()->endOfDay();
             } catch (\Exception $e) {
-                $toDate = $start->copy()->endOfDay();
+                $toDate = $from->copy()->endOfDay();
             }
 
-            // Clamp the selected dates to the week boundaries
-            $weekStart = $start->copy()->startOfDay();
-            $weekEnd = $start->copy()->endOfWeek()->endOfDay();
+            // Determine the week boundaries. If the user provided a from_date, derive the week from that date,
+            // otherwise use the current week's boundaries.
+            if ($fromDateParam) {
+                $weekStart = $fromDate->copy()->startOfWeek()->startOfDay();
+                $weekEnd = $fromDate->copy()->endOfWeek()->endOfDay();
+            } else {
+                $start = $from->copy()->startOfDay();
+                $weekStart = $start->copy()->startOfDay();
+                $weekEnd = $start->copy()->endOfWeek()->endOfDay();
+            }
 
             if ($fromDate->lt($weekStart)) $fromDate = $weekStart->copy();
             if ($toDate->gt($weekEnd)) $toDate = $weekEnd->copy();
@@ -116,9 +120,8 @@ class ReporteController extends Controller
                 }
                 $rDone = Rutina::whereIn('id', $rDoneIds)->orderBy('id','desc')->get();
 
-                if ($userId) {
+                if (Auth::check()) {
                     $incs = Incidencia::whereBetween('created_at', [$dayStart, $dayEnd])
-                        ->where('user_id', $userId)
                         ->with('user')
                         ->orderBy('created_at', 'asc')
                         ->get();
@@ -236,15 +239,14 @@ class ReporteController extends Controller
             }
             $rDone = Rutina::whereIn('id', $rDoneIds)->orderBy('id','desc')->get();
 
-            if ($userId) {
-                $incs = Incidencia::whereBetween('created_at', [$dayStart, $dayEnd])
-                    ->where('user_id', $userId)
-                    ->with('user')
-                    ->orderBy('created_at', 'asc')
-                    ->get();
-            } else {
-                $incs = collect();
-            }
+                if (Auth::check()) {
+                    $incs = Incidencia::whereBetween('created_at', [$dayStart, $dayEnd])
+                        ->with('user')
+                        ->orderBy('created_at', 'asc')
+                        ->get();
+                } else {
+                    $incs = collect();
+                }
 
             $weekdayName = ucfirst(\Carbon\Carbon::parse($dayStart)->locale('es')->isoFormat('dddd'));
 

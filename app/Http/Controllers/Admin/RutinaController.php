@@ -34,22 +34,17 @@ class RutinaController extends Controller
             // Treat completion toggles as daily completions persisted in rutina_completions
             $completed = $request->boolean('completed');
             $today = Carbon::today()->toDateString();
-            $userId = Auth::check() ? Auth::id() : null;
 
             if ($completed) {
-                // create if not exists
+                // create a global completion for this rutina/date (shared by all users)
                 RutinaCompletion::firstOrCreate([
                     'rutina_id' => $rutina->id,
-                    'user_id' => $userId,
                     'date' => $today,
                 ]);
             } else {
-                // remove today's completion
+                // remove today's global completion for this rutina (affects all users)
                 RutinaCompletion::where('rutina_id', $rutina->id)
                     ->where('date', $today)
-                    ->when($userId, function($q) use ($userId){
-                        return $q->where('user_id', $userId);
-                    })
                     ->delete();
             }
 
