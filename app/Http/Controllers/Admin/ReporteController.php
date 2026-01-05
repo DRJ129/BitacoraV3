@@ -49,8 +49,11 @@ class ReporteController extends Controller
         if (!$userId) {
             $doneRoutineIds = [];
         } else {
+            // include completions created for the user OR global completions (user_id IS NULL)
             $doneRoutineIds = RutinaCompletion::whereBetween('date', [$from->toDateString(), $to->toDateString()])
-                ->where('user_id', $userId)
+                ->where(function($q) use ($userId) {
+                    $q->where('user_id', $userId)->orWhereNull('user_id');
+                })
                 ->pluck('rutina_id')->unique()->toArray();
         }
         $routinesDone = Rutina::whereIn('id', $doneRoutineIds)->orderBy('id','desc')->get();
@@ -112,8 +115,11 @@ class ReporteController extends Controller
                 $dayEnd = $cursor->copy()->endOfDay();
 
                 if ($userId) {
+                    // include user-specific completions and global completions
                     $rDoneIds = RutinaCompletion::whereDate('date', $dayStart->toDateString())
-                        ->where('user_id', $userId)
+                        ->where(function($q) use ($userId) {
+                            $q->where('user_id', $userId)->orWhereNull('user_id');
+                        })
                         ->pluck('rutina_id')->unique()->toArray();
                 } else {
                     $rDoneIds = [];
@@ -164,29 +170,29 @@ class ReporteController extends Controller
         $dayStart = $day->copy()->startOfDay();
         $dayEnd = $day->copy()->endOfDay();
 
+    // For PDF generation include completions and incidencias from all users
     $routines = [];
-    $userId = Auth::id();
-    if ($userId) {
-        $routines = Rutina::whereIn('id', RutinaCompletion::whereDate('date', $dayStart->toDateString())->where('user_id', $userId)->pluck('rutina_id')->unique()->toArray())->orderBy('id','desc')->get();
+    $rDoneIds = RutinaCompletion::whereDate('date', $dayStart->toDateString())
+        ->pluck('rutina_id')->unique()->toArray();
+
+    if (!empty($rDoneIds)) {
+        $routines = Rutina::whereIn('id', $rDoneIds)->orderBy('id','desc')->get();
     }
 
-    // Incidencias del día en orden de inserción (asc)
-    if ($userId) {
-        $incidencias = Incidencia::whereBetween('created_at', [$dayStart, $dayEnd])
-            ->where('user_id', $userId)
-            ->with('user')
-            ->orderBy('created_at', 'asc')
-            ->get();
-    } else {
-        $incidencias = collect();
-    }
+    // Incidencias del día en orden de inserción (asc) - incluir de todos los usuarios
+    $incidencias = Incidencia::whereBetween('created_at', [$dayStart, $dayEnd])
+        ->with('user')
+        ->orderBy('created_at', 'asc')
+        ->get();
 
-        $viewData = ['title' => 'Reporte ' . $day->format('Y-m-d'), 'byDay' => [[
+        $viewData = ['title' => 'Reporte ' . $day->format('d/m/Y'), 'byDay' => [[
             'date' => $day,
             'weekday' => ucfirst(\Carbon\Carbon::parse($day)->locale('es')->isoFormat('dddd')),
             'routines' => $routines,
             'incidencias' => $incidencias,
-        ]]];
+        ]],
+        'generated_by' => Auth::user(),
+        'generated_at' => Carbon::now()];
 
         // If PDF generator (barryvdh/laravel-dompdf) is installed, use it
         if (class_exists('\Barryvdh\DomPDF\Facade') || class_exists('\Dompdf\Dompdf')) {
@@ -232,21 +238,15 @@ class ReporteController extends Controller
             $dayStart = $cursor->copy()->startOfDay();
             $dayEnd = $cursor->copy()->endOfDay();
 
-            if ($userId) {
-                $rDoneIds = RutinaCompletion::whereDate('date', $dayStart->toDateString())->where('user_id', $userId)->pluck('rutina_id')->unique()->toArray();
-            } else {
-                $rDoneIds = [];
-            }
+            // For PDF report by range include completions and incidencias from all users
+            $rDoneIds = RutinaCompletion::whereDate('date', $dayStart->toDateString())
+                ->pluck('rutina_id')->unique()->toArray();
             $rDone = Rutina::whereIn('id', $rDoneIds)->orderBy('id','desc')->get();
 
-                if (Auth::check()) {
-                    $incs = Incidencia::whereBetween('created_at', [$dayStart, $dayEnd])
-                        ->with('user')
-                        ->orderBy('created_at', 'asc')
-                        ->get();
-                } else {
-                    $incs = collect();
-                }
+            $incs = Incidencia::whereBetween('created_at', [$dayStart, $dayEnd])
+                ->with('user')
+                ->orderBy('created_at', 'asc')
+                ->get();
 
             $weekdayName = ucfirst(\Carbon\Carbon::parse($dayStart)->locale('es')->isoFormat('dddd'));
 
@@ -260,7 +260,9 @@ class ReporteController extends Controller
             $cursor->addDay();
         }
 
-        $viewData = ['title' => 'Reporte ' . $fromDate->format('Y-m-d') . ' a ' . $toDate->format('Y-m-d'), 'byDay' => $byDay];
+    $viewData = ['title' => 'Reporte ' . $fromDate->format('d/m/Y') . ' a ' . $toDate->format('d/m/Y'), 'byDay' => $byDay,
+    'generated_by' => Auth::user(),
+    'generated_at' => Carbon::now()];
 
         if (class_exists('\Barryvdh\DomPDF\Facade') || class_exists('\Dompdf\Dompdf')) {
             try {

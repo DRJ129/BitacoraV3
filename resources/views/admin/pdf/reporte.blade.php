@@ -18,9 +18,16 @@
     </style>
   </head>
   <body>
+    <div style="text-align:center;margin-bottom:12px;line-height:1.05;">
+      <div style="font-size:18px;font-weight:800;letter-spacing:0.6px">VENEZOLANA DE INDUSTRIA TECNOLOGICA C.A</div>
+      <div style="font-size:16px;font-weight:700;letter-spacing:0.4px;margin-top:4px">BITACORA DE ACTIVIDADES</div>
+      <div style="font-size:14px;font-weight:700;margin-top:2px">DEPARTAMENTO DE REDES Y SERVIDORES</div>
+    </div>
+
     <div class="header">
       <div class="title">{{ $title ?? 'Reporte' }}</div>
-      <div class="meta">Generado: {{ \Carbon\Carbon::now()->format('Y-m-d H:i') }}</div>
+      <div class="meta">Generado: {{ isset($generated_at) ? $generated_at->format('d/m/Y H:i') : \Carbon\Carbon::now()->format('d/m/Y H:i') }}<br>
+        Por: {{ isset($generated_by) ? ($generated_by->name ?? $generated_by->email ?? 'Desconocido') : 'Desconocido' }}</div>
     </div>
 
     @if(isset($notice))
@@ -33,41 +40,25 @@
           <div style="font-weight:700">{{ $day['weekday'] }} - {{ $day['date']->format('d/m/Y') }}</div>
 
           <div class="section">
-            <div style="font-weight:700">Rutinas marcadas</div>
-            @if(isset($day['routines']) && count($day['routines']))
-              <table>
-                <thead><tr><th>Rutina</th><th>Hora</th></tr></thead>
-                <tbody>
-                  @foreach($day['routines'] as $r)
-                    <tr>
-                      <td>{{ $r->content }}</td>
-                      <td>{{ $r->updated_at ? $r->updated_at->format('H:i') : '' }}</td>
-                    </tr>
-                  @endforeach
-                </tbody>
-              </table>
-            @else
-              <div class="item">No hay rutinas marcadas este día.</div>
-            @endif
-          </div>
+            <div style="font-weight:700">Actividades</div>
+            @php
+              $activities = [];
+              if(isset($day['routines'])){
+                foreach($day['routines'] as $r){ $activities[] = $r->content; }
+              }
+              if(isset($day['incidencias'])){
+                foreach($day['incidencias'] as $inc){ $activities[] = $inc->content; }
+              }
+            @endphp
 
-          <div class="section">
-            <div style="font-weight:700">Incidencias</div>
-            @if(isset($day['incidencias']) && count($day['incidencias']))
-              <table>
-                <thead><tr><th>ID</th><th>Contenido</th><th>Hora</th></tr></thead>
-                <tbody>
-                  @foreach($day['incidencias'] as $inc)
-                    <tr>
-                      <td>{{ $loop->iteration }}</td>
-                      <td>{{ $inc->content }}</td>
-                      <td>{{ $inc->created_at ? $inc->created_at->format('H:i') : '' }}</td>
-                    </tr>
-                  @endforeach
-                </tbody>
-              </table>
+            @if(count($activities))
+              <ul style="padding-left:18px;margin-top:6px">
+                @foreach($activities as $act)
+                  <li style="margin-bottom:6px">{{ $act }}</li>
+                @endforeach
+              </ul>
             @else
-              <div class="item">No hay incidencias este día.</div>
+              <div class="item">No hay actividades este día.</div>
             @endif
           </div>
         </div>
