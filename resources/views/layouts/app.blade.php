@@ -5,6 +5,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <!-- Prevent caching and BFCache showing authenticated pages after logout -->
+    <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <title>@yield('title')</title>
     @stack('css')
@@ -251,6 +255,14 @@
 
         });
     </script>
+        <script>
+            // If the page is restored from the BFCache, force reload so authentication state is re-validated
+            window.addEventListener('pageshow', function (event) {
+                if (event.persisted) {
+                    window.location.reload();
+                }
+            });
+        </script>
 </body>
 
 </html>

@@ -9,14 +9,34 @@ use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\RutinaController;
 use App\Models\Rutina;
 use Carbon\Carbon;
+use App\Http\Middleware\NoCache;
+use Illuminate\Http\Request;
 
-Route::get('/', function () {
-    // Si está autenticado, mostrar dashboard; si no, la vista welcome
-    if (Auth::check()) {
-        return view('dashboard');
-    }
-    return view('auth.login');
-});
+Route::middleware([NoCache::class])->group(function () {
+
+    Route::get('/', function () {
+        // Si está autenticado, mostrar dashboard; si no, la vista welcome
+        if (Auth::check()) {
+            // Prepare last 7 days labels and counts for incidencias and rutinas
+            $labels = [];
+            $incCounts = [];
+            $rutCounts = [];
+            $cursor = Carbon::today()->subDays(6); // 7 days including today
+            for ($i = 0; $i < 7; $i++) {
+                $day = $cursor->copy()->addDays($i);
+                $labels[] = $day->format('d/m');
+
+                $inc = \App\Models\Incidencia::whereDate('created_at', $day->toDateString())->count();
+                $rut = \App\Models\RutinaCompletion::whereDate('date', $day->toDateString())->count();
+
+                $incCounts[] = $inc;
+                $rutCounts[] = $rut;
+            }
+
+            return view('dashboard', compact('labels', 'incCounts', 'rutCounts'));
+        }
+        return view('auth.login');
+    });
 
 // Ruta para la vista de login creada manualmente
 Route::get('/login', function () {
@@ -125,8 +145,8 @@ Route::match(['put', 'patch'], '/user/info', function (\Illuminate\Http\Request 
     return redirect()->route('user.info')->with('success', 'Información actualizada');
 })->name('user.info.update');
 
-// Logout (POST)
-use Illuminate\Http\Request;
+    // Logout (POST)
+});
 
 Route::post('/logout', function (Request $request) {
     Auth::logout();
