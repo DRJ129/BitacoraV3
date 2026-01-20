@@ -49,11 +49,6 @@
                     <input type="checkbox" name="remember" id="remember" {{ old('remember') ? 'checked' : '' }}>
                     <label for="remember" class="dark:text-white text-black">Recordarme</label>
                 </div>
-                <div>
-                    @if (Route::has('password.request'))
-                        <a href="{{ route('password.request') }}">¿Olvidó su contraseña?</a>
-                    @endif
-                </div>
             </div>
 
             <div class="text-right">
@@ -62,15 +57,19 @@
                     class="text-white cursor-pointer bg-brand box-border border border-transparent hover:bg-brand-strong focus:ring-4 focus:ring-brand-medium shadow-xs font-medium leading-5 rounded-base text-sm px-4 py-2.5 focus:outline-none">Entrar</button>
             </div>
 
-            <div class="">
-                @if (Route::has('password.request'))
-                    <a href="{{ route('password.request') }}">¿Olvidó su contraseña?</a>
-                @endif
+            <div class="mt-4 flex items-center justify-between text-sm">
+                <div>
+                    @if (Route::has('password.request'))
+                        <a class="text-gray-700 hover:underline" href="{{ route('password.request') }}">¿Olvidó su contraseña?</a>
+                    @endif
+                </div>
 
-                @if (Route::has('register'))
-                    <span class="dark:text-white text-black">¿No tienes cuesta? </span><a class="text-blue-600 hover:text-blue-400"
-                        href="{{ route('register') }}">Registrarse aquí</a>
-                @endif
+                <div>
+                    @if (Route::has('register'))
+                        <span class="text-gray-700">¿No tienes cuenta?</span>
+                        <a class="text-blue-600 hover:text-blue-400 ml-2" href="{{ route('register') }}">Registrarse aquí</a>
+                    @endif
+                </div>
             </div>
         </form>
     </div>
