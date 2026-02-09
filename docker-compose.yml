@@ -34,7 +34,7 @@ services:
     restart: unless-stopped
     environment:
       MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: bitacora
+      MYSQL_DATABASE: BitacoraV3
       MYSQL_USER: app
       MYSQL_PASSWORD: secret
     volumes:
