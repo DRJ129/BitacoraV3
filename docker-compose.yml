@@ -1,9 +1,6 @@
 
 services:
   app:
-    build:
-    context: ./app
-    dockerfile: Dockerfile
     image: bitacora_app
     restart: unless-stopped
     ports:
