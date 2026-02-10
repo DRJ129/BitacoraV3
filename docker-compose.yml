@@ -52,6 +52,53 @@ services:
       timeout: 5s
       retries: 12
 
+  # One-off setup service: npm install/build + migrations + seeders
+  # Usage: docker compose run --rm setup
+  setup:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: bitacora_app:latest
+    working_dir: /var/www
+    env_file:
+      - .env
+    volumes:
+      - ./:/var/www:cached
+      - vendor:/var/www/vendor
+      - node_modules:/var/www/node_modules
+    environment:
+      APP_ENV: local
+      APP_DEBUG: '1'
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_PASSWORD: root
+    entrypoint: /bin/sh
+    command:
+      - -c
+      - |
+        echo "Installing npm dependencies..."
+        npm ci || true
+        echo "Building front-end assets..."
+        npm run build || true
+        echo "Waiting for database..."
+        for i in 1 2 3 4 5 6 7 8 9 10; do
+          if mysqladmin ping -h db -u root -proot 2>/dev/null; then
+            echo "Database is ready!"
+            break
+          fi
+          echo "Waiting... ($i/10)"
+          sleep 2
+        done
+        echo "Running migrations..."
+        php artisan migrate --force || true
+        echo "Running AdminUserSeeder..."
+        php artisan db:seed --class=Database\\Seeders\\AdminUserSeeder --force || true
+        echo "Setup completed!"
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: 'no'
+
 volumes:
   dbdata:
   vendor:
