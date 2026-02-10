@@ -56,7 +56,8 @@ fi
 if [ -f package.json ] && [ ! -f public/build/manifest.json ]; then
     echo "Building front-end assets (npm run build)..."
     # try to build; allow failures but continue so container still starts
-    npm run build --silent || true
+    npm install --silent --no-audit --no-fund 2>&1 | tail -5 || true
+    npm run build 2>&1 | tail -20 || true
 fi
 
 # Ensure composer dependencies present
@@ -68,6 +69,9 @@ fi
 echo "Waiting DB and running migrations..."
 if wait_for_db; then
 	php artisan migrate --force || true
+	# Ejecutar seeder del administrador después de las migraciones
+	echo "Running AdminUserSeeder..."
+	php artisan db:seed --class=Database\\Seeders\\AdminUserSeeder --force || true
 else
 	echo "DB not available, skipping migrations for now"
 fi

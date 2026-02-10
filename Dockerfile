@@ -9,6 +9,10 @@ RUN npm run build --silent || true
 FROM php:8.2-fpm
 WORKDIR /var/www
 
+# Install Node.js
+RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash -
+RUN apt-get update && apt-get install -y nodejs
+
 # system deps
 RUN apt-get update && apt-get install -y \
     git zip unzip libzip-dev libpng-dev libjpeg-dev libfreetype6-dev libonig-dev libxml2-dev libicu-dev curl default-libmysqlclient-dev \
